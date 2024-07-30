@@ -7,7 +7,7 @@ RUN apt update
 RUN apt install tzdata -y && \
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone
-    
+
 RUN apt install jq -y
 
 WORKDIR /app
@@ -53,6 +53,16 @@ RUN npm run build
 FROM node:22-bookworm-slim AS jsruntime
 
 WORKDIR /app
+
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
+
+RUN apt update
+
+RUN apt install tzdata -y && \
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone
+
+RUN apt install ffmpeg -y
 
 COPY --from=tsruntime /app/dist /app/dist
 
